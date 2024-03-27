@@ -1,11 +1,11 @@
-const express = require('express')
-const {
+import express from 'express'
+import {
     getProducts,
     createProduct,
     deleteProduct,
-} = require('../controllers/productController')
-const requireAuth = require('../middleware/requireAuth')
-const requireAdminAuth = require('../middleware/requireAdminAuth')
+} from '../controllers/productController.js'
+import requireAuth from '../middleware/requireAuth.js'
+import requireAdminAuth from '../middleware/requireAdminAuth.js'
 
 const router = express.Router()
 
@@ -21,4 +21,4 @@ router.post('/', createProduct)
 
 router.delete('/:id', deleteProduct)
 
-module.exports = router
+export default router

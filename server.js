@@ -1,9 +1,12 @@
-require('dotenv').config()
-const express = require('express')
-const mongoose = require('mongoose')
-const userRoutes = require('./routes/user')
-const productRoutes = require('./routes/products')
-const cors = require('cors')
+import 'dotenv/config.js'
+import express from 'express'
+import mongoose from 'mongoose'
+import userRoutes from './routes/user.js'
+import productRoutes from './routes/products.js'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import passportUtil from './utils/passport.js'
+import checkDoubleAuth from './middleware/checkDoubleAuth.js'
 
 // express app
 const app = express()
@@ -21,16 +24,21 @@ mongoose
 
 // middleware
 app.use(express.json())
+app.use(cookieParser())
 app.use((req, res, next) => {
     console.log(req.path, req.method)
     next()
 })
+app.set('trust proxy', true)
 app.use(
     cors({
-        origin: ['https://tamaqdana.onrender.com'],
+        origin: process.env.CLIENT_URL,
+        credentials: true,
     })
 )
+passportUtil(app)
 
 // routes
-app.use('', userRoutes)
+app.use(checkDoubleAuth)
+app.use('/user', userRoutes)
 app.use('/products', productRoutes)
